@@ -1,22 +1,29 @@
 const fs = require("fs");
+const args = process.argv.slice(2);
 
 const core = require("@actions/core");
 const github = require("@actions/github");
 
 try {
-  //   const github_token = core.getInput("GITHUB_TOKEN");
-  //   const octokit = github.getOctokit(github_token);
+  const fileMapInput = args[0].trim();
+  if (fileMapInput) {
+    const fileMap = fileMapInput
+      .split(",")
+      .filter(Boolean)
+      .map((x) => x.trim())
+      .reduce(
+        (acc, cur) => ({ ...acc, [cur.split(":")[0]]: cur.split(":")[1] }),
+        {}
+      );
 
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput("who-to-greet");
-  console.log(`Hello ${nameToGreet}!`);
+    Object.keys(fileMap).forEach((key) => {
+      const text = fs.readFileSync(fileMap[key], "utf8");
+      console.log(text);
+    });
+  }
+
   const time = new Date().toTimeString();
   core.setOutput("time", time);
-
-  console.log(`another, Hello ${nameToGreet}!`);
-  const text = fs.readFileSync("dist/index.txt", "utf8");
-  console.log(text);
-  console.log(`third, Hello ${nameToGreet}!`);
 } catch (error) {
   core.setFailed(error.message);
 }

@@ -30791,24 +30791,31 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const fs = __nccwpck_require__(7147);
+const args = process.argv.slice(2);
 
 const core = __nccwpck_require__(8134);
 const github = __nccwpck_require__(2868);
 
 try {
-  //   const github_token = core.getInput("GITHUB_TOKEN");
-  //   const octokit = github.getOctokit(github_token);
+  const fileMapInput = args[0].trim();
+  if (fileMapInput) {
+    const fileMap = fileMapInput
+      .split(",")
+      .filter(Boolean)
+      .map((x) => x.trim())
+      .reduce(
+        (acc, cur) => ({ ...acc, [cur.split(":")[0]]: cur.split(":")[1] }),
+        {}
+      );
 
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput("who-to-greet");
-  console.log(`Hello ${nameToGreet}!`);
+    Object.keys(fileMap).forEach((key) => {
+      const text = fs.readFileSync(fileMap[key], "utf8");
+      console.log(text);
+    });
+  }
+
   const time = new Date().toTimeString();
   core.setOutput("time", time);
-
-  console.log(`another, Hello ${nameToGreet}!`);
-  const text = fs.readFileSync("dist/index.txt", "utf8");
-  console.log(text);
-  console.log(`third, Hello ${nameToGreet}!`);
 } catch (error) {
   core.setFailed(error.message);
 }
