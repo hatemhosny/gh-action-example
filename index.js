@@ -23,8 +23,7 @@ try {
 
     const mime = new mimeTypes.Mime();
     Object.keys(fileMap).forEach((key) => {
-      const file_path = "files\file.txt";
-      const mime_type = mime.getType(file_path) || "text/javascript";
+      const mime_type = mime.getType(fileMap[key]) || "text/javascript";
       const text = fs.readFileSync(fileMap[key], "utf8");
       console.log(toDataUrl(text, mime_type));
     });
