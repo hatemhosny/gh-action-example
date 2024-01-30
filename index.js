@@ -24,8 +24,6 @@ try {
     Object.keys(fileMap).forEach((key) => {
       const text = fs.readFileSync(fileMap[key], "utf8");
       const mime_type = mime.getType(fileMap[key]);
-      console.log(fileMap[key]);
-      console.log(mime_type);
       console.log(toDataUrl(text, mime_type));
     });
   }
