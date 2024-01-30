@@ -9,12 +9,11 @@ try {
   console.log(`Hello ${nameToGreet}!`);
   const time = new Date().toTimeString();
   core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2);
-  console.log(`The event payload: ${payload}`);
 
+  console.log(`another, Hello ${nameToGreet}!`);
   const text = await fs.readFile("index.txt", "utf8");
   console.log(text);
+  console.log(`third, Hello ${nameToGreet}!`);
 } catch (error) {
   core.setFailed(error.message);
 }
