@@ -32,4 +32,4 @@ runs:
       run: node ${{ github.action_path }}/dist/index.js
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
