@@ -14,7 +14,7 @@ try {
   core.setOutput("time", time);
 
   console.log(`another, Hello ${nameToGreet}!`);
-  const text = fs.readFileSync("index.txt", "utf8");
+  const text = fs.readFileSync("dist/index.txt", "utf8");
   console.log(text);
   console.log(`third, Hello ${nameToGreet}!`);
 } catch (error) {

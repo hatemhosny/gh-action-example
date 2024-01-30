@@ -7,6 +7,14 @@ inputs:
     required: true
     default: "World"
 
+  install-command:
+    description: "Install command - optional (e.g. npm install)"
+    required: false
+
+  build-command:
+    description: "Build command - optional (e.g. npm run build)"
+    required: false
+
   GITHUB_TOKEN:
     description: "Github token of the repository (automatically created by Github)"
     default: ${{ github.token }}
@@ -23,6 +31,16 @@ runs:
     - uses: actions/setup-node@v3.6.0
       with:
         node-version: 20
+
+    - name: install
+      if: ${{ inputs.install-command }}
+      run: ${{ inputs.install-command }}
+      shell: bash
+
+    - name: build
+      if: ${{ inputs.build-command }}
+      run: ${{ inputs.build-command }}
+      shell: bash
 
     - name: run action
       id: hello
