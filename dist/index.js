@@ -30796,8 +30796,8 @@ const core = __nccwpck_require__(8134);
 const github = __nccwpck_require__(2868);
 
 try {
-  const github_token = core.getInput("GITHUB_TOKEN");
-  const octokit = github.getOctokit(github_token);
+  //   const github_token = core.getInput("GITHUB_TOKEN");
+  //   const octokit = github.getOctokit(github_token);
 
   // `who-to-greet` input defined in action metadata file
   const nameToGreet = core.getInput("who-to-greet");
