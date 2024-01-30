@@ -29,5 +29,5 @@ runs:
 
     - name: run action
       id: hello
-      run: node ./index.js
+      run: node .$GITHUB_PATH/dist/index.js
       shell: bash
