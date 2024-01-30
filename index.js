@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { encode } = require("js-base64");
-const mimeTypes = require("mime");
+const mime = require("mime");
 
 const core = require("@actions/core");
 const github = require("@actions/github");
@@ -21,7 +21,6 @@ try {
         {}
       );
 
-    const mime = new mimeTypes.Mime();
     Object.keys(fileMap).forEach((key) => {
       const text = fs.readFileSync(fileMap[key], "utf8");
       const mime_type = mime.getType(fileMap[key]);

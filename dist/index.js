@@ -31247,7 +31247,7 @@ var __webpack_exports__ = {};
 (() => {
 const fs = __nccwpck_require__(7147);
 const { encode } = __nccwpck_require__(4139);
-const mimeTypes = __nccwpck_require__(1402);
+const mime = __nccwpck_require__(1402);
 
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
@@ -31268,7 +31268,6 @@ try {
         {}
       );
 
-    const mime = new mimeTypes.Mime();
     Object.keys(fileMap).forEach((key) => {
       const text = fs.readFileSync(fileMap[key], "utf8");
       const mime_type = mime.getType(fileMap[key]);
