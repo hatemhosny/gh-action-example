@@ -27035,6 +27035,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const fs = __nccwpck_require__(7147);
+const path = __nccwpck_require__(1017);
 const { encode } = __nccwpck_require__(4139);
 const mime = __nccwpck_require__(9994);
 
@@ -27049,7 +27050,7 @@ const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str.replace(pattern, (match, file) => {
-    const content = fs.readFileSync(file, "utf8");
+    const content = fs.readFileSync(path.resolve(file), "utf8");
     return content ? toDataUrl(content, "text/javascript") : match;
   });
 };

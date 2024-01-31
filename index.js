@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const { encode } = require("js-base64");
 const mime = require("mime");
 
@@ -13,7 +14,7 @@ const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str.replace(pattern, (match, file) => {
-    const content = fs.readFileSync(file, "utf8");
+    const content = fs.readFileSync(path.resolve(file), "utf8");
     return content ? toDataUrl(content, "text/javascript") : match;
   });
 };
