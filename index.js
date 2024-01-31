@@ -10,16 +10,17 @@ const sha = process.env.SHA || "";
 
 const rootDir = ".livecodes";
 
-const allFiles = fs.readdirSync("dist").map((file) => `${file}`);
-console.log(allFiles);
-
 const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str.replace(new RegExp(pattern), (_match, file) => {
-    const type = mime.getType(file) || "text/javascript";
-    const content = fs.readFileSync(file, "utf8");
-    return content ? toDataUrl(content, type) : file;
+    try {
+      const type = mime.getType(file) || "text/javascript";
+      const content = fs.readFileSync(file, "utf8");
+      return content ? toDataUrl(content, type) : file;
+    } catch {
+      return file;
+    }
   });
 };
 
