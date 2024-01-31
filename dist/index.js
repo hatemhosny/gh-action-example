@@ -27046,7 +27046,7 @@ const sha = process.env.SHA || "";
 
 const rootDir = ".livecodes";
 
-const allFiles = fs.readdirSync(".").map((file) => `${file}`);
+const allFiles = fs.readdirSync("dist").map((file) => `${file}`);
 console.log(allFiles);
 
 const filesToDataUrls = (str) => {
