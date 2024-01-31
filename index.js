@@ -4,6 +4,7 @@ const mime = require("mime");
 
 const core = require("@actions/core");
 const github = require("@actions/github");
+const { getPlaygroundUrl } = require("livecodes");
 
 const rootDir = ".livecodes";
 const args = process.argv.slice(2);
@@ -43,11 +44,20 @@ const removeExtension = (path) => path.split(".").slice(0, -1).join(".");
 try {
   if (!fs.existsSync(rootDir)) {
     console.error(`Directory ${rootDir} does not exist.`);
-    throw new Error(`Directory ${rootDir} does not exist.`);
   }
 
   const configs = getConfigs();
-  console.log(configs);
+  if (Object.keys(configs).length === 0) {
+    console.error(`No configuration files found in ${rootDir}.`);
+  }
+
+  Object.keys(configs).forEach((key) => {
+    const config = configs[key];
+    const playgroundUrl = getPlaygroundUrl({
+      config,
+    });
+    console.log(key, playgroundUrl);
+  });
 
   const fileList =
     args[0]
