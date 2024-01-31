@@ -27050,6 +27050,7 @@ const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str.replace(pattern, (match, file) => {
+    console.log("file", file);
     const content = fs.readFileSync(path.resolve(file), "utf8");
     return content ? toDataUrl(content, "text/javascript") : match;
   });
