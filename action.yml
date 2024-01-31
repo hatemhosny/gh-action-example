@@ -2,11 +2,6 @@ name: "Hello World"
 description: "Greet someone and record the time"
 
 inputs:
-  who-to-greet: # id of input
-    description: "Who to greet"
-    required: true
-    default: "World"
-
   install-command:
     description: "Install command - optional (e.g. npm install)"
     required: false
@@ -15,14 +10,10 @@ inputs:
     description: "Build command - optional (e.g. npm run build)"
     required: false
 
-  file-list:
-    description: "List of files to copy"
-    required: false
-
   GITHUB_TOKEN:
     description: "Github token of the repository (automatically created by Github)"
     default: ${{ github.token }}
-    required: false
+    required: true
 
 outputs:
   time: # id of output
@@ -56,5 +47,5 @@ runs:
 
     - name: run action
       id: hello
-      run: node ${{ github.action_path }}/dist/index.js "${{ inputs.file-list }}"
+      run: node ${{ github.action_path }}/dist/index.js
       shell: bash

@@ -7,7 +7,6 @@ const github = require("@actions/github");
 const { getPlaygroundUrl } = require("livecodes");
 
 const rootDir = ".livecodes";
-const args = process.argv.slice(2);
 
 const toDataUrl = (content, type) =>
   `data:${type};charset=UTF-8;base64,` + encode(content, true);
@@ -59,11 +58,7 @@ try {
     console.log(key, playgroundUrl);
   });
 
-  const fileList =
-    args[0]
-      ?.split(",")
-      .map((x) => x.trim())
-      .filter(Boolean) || [];
+  const fileList = ["dist/index.txt"];
 
   fileList.forEach((file) => {
     const text = fs.readFileSync(file, "utf8");
