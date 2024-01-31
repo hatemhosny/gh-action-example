@@ -27045,6 +27045,15 @@ const sha = process.env.SHA || "";
 
 const rootDir = ".livecodes";
 
+const filesToDataUrls = (str) => {
+  const pattern =
+    /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
+  return str.replace(pattern, (match, file) => {
+    const content = fs.readFileSync(file, "utf8");
+    return content ? toDataUrl(content, "text/javascript") : match;
+  });
+};
+
 const getProjects = () => {
   const files = fs.readdirSync(rootDir);
   return files
@@ -27052,7 +27061,8 @@ const getProjects = () => {
       try {
         const path = `${rootDir}/${file}`;
         const content = fs.readFileSync(path, "utf8");
-        const options = JSON.parse(content);
+        const contentWithUrls = filesToDataUrls(content);
+        const options = JSON.parse(contentWithUrls);
         const isConfig = !Object.keys(options).find((key) =>
           [
             "appUrl",
