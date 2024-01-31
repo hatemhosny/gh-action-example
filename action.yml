@@ -35,14 +35,12 @@ runs:
     - name: Generate output
       id: generate_output
       shell: bash
-      run: node ${{ github.action_path }}/dist/index.js "${{ github.event.pull_request.head.sha }}"
+      run: node ${{ github.action_path }}/dist/index.js ${{ github.event.pull_request.head.sha }}
 
     - name: Save output and PR number
       shell: bash
       run: |
         mkdir -p ./pr
-        echo ${{ github.event.number }} > ./pr/NR
-        echo ${{ github.event.pull_request.head.sha }} > ./pr/SHA
         echo "${{ steps.generate_output.outputs.message }}" > ./pr/${{ github.event.number }}.md
 
     - uses: actions/upload-artifact@v2

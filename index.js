@@ -3,7 +3,6 @@ const { encode } = require("js-base64");
 const mime = require("mime");
 
 const core = require("@actions/core");
-const github = require("@actions/github");
 const { getPlaygroundUrl } = require("livecodes");
 
 const args = process.argv.slice(2);
@@ -92,7 +91,7 @@ try {
     });
     return { title: key, url: playgroundUrl };
   });
-
+  console.log(projects);
   core.setOutput("message", generateOutput(projects));
 
   const fileList = ["dist/index.txt"];
