@@ -27045,9 +27045,6 @@ const sha = process.env.SHA || "";
 
 const rootDir = ".livecodes";
 
-const toDataUrl = (content, type) =>
-  `data:${type};charset=UTF-8;base64,` + encode(content, true);
-
 const getProjects = () => {
   const files = fs.readdirSync(rootDir);
   return files
@@ -27080,13 +27077,25 @@ const getProjects = () => {
           ? acc
           : {
               ...acc,
-              [`${cur.config?.title || removeExtension(files[idx])}`]: cur,
+              [`${
+                cur.config?.title ||
+                getStarterTitle(cur.template) ||
+                removeExtension(files[idx])
+              }`]: cur,
             },
       {}
     );
 };
 
+const toDataUrl = (content, type) =>
+  `data:${type};charset=UTF-8;base64,` + encode(content, true);
+
 const removeExtension = (path) => path.split(".").slice(0, -1).join(".");
+
+const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const getStarterTitle = (name) =>
+  !name ? "" : name.split("-").map(capitalize).join(" ") + " Template";
 
 const trimLongUrl = (url, max) => {
   if (url.length > max) {
