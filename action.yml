@@ -47,7 +47,7 @@ runs:
       run: |
         mkdir -p ./pr
         echo ${{ github.event.number }} > ./pr/NR
-        echo ${{ steps.hello.outputs.time }} > ./pr/${{ github.event.number }}.md
+        echo "${{ steps.hello.outputs.time }}" > ./pr/${{ github.event.number }}.md
 
     - uses: actions/upload-artifact@v2
       with:
