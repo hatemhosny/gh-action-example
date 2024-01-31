@@ -27035,7 +27035,6 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const fs = __nccwpck_require__(7147);
-const path = __nccwpck_require__(1017);
 const { encode } = __nccwpck_require__(4139);
 const mime = __nccwpck_require__(9994);
 
@@ -27043,21 +27042,27 @@ const core = __nccwpck_require__(2186);
 const { getPlaygroundUrl } = __nccwpck_require__(7834);
 
 const sha = process.env.SHA || "";
+const ref = process.env.REF || "";
+const repo = process.env.REPO || "";
 
 const rootDir = ".livecodes";
 
-const filesToDataUrls = (str) => {
+const replaceValues = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
-  return str.replace(new RegExp(pattern), (_match, file) => {
-    try {
-      const type = mime.getType(file) || "text/javascript";
-      const content = fs.readFileSync(file, "utf8");
-      return content ? toDataUrl(content, type) : file;
-    } catch {
-      return file;
-    }
-  });
+  return str
+    .replace(new RegExp(pattern), (_match, file) => {
+      try {
+        const type = mime.getType(file) || "text/javascript";
+        const content = fs.readFileSync(file, "utf8");
+        return content ? toDataUrl(content, type) : file;
+      } catch {
+        return file;
+      }
+    })
+    .replace(/{{\s*LIVECODES::SHA\s*}}/g, sha)
+    .replace(/{{\s*LIVECODES::REF\s*}}/g, ref)
+    .replace(/{{\s*LIVECODES::REPO\s*}}/g, repo);
 };
 
 const getProjects = () => {
@@ -27067,7 +27072,7 @@ const getProjects = () => {
       try {
         const path = `${rootDir}/${file}`;
         const content = fs.readFileSync(path, "utf8");
-        const contentWithUrls = filesToDataUrls(content);
+        const contentWithUrls = replaceValues(content);
         const options = JSON.parse(contentWithUrls);
         const isConfig = !Object.keys(options).find((key) =>
           [

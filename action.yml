@@ -38,6 +38,8 @@ runs:
       run: node ${{ github.action_path }}/dist/index.js
       env:
         SHA: ${{ github.event.pull_request.head.sha }}
+        REF: ${{ github.event.pull_request.head.ref }}
+        REPO: ${{ github.repository }}
 
     - name: Save output and PR number
       shell: bash

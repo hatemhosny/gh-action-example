@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const { encode } = require("js-base64");
 const mime = require("mime");
 
@@ -7,21 +6,27 @@ const core = require("@actions/core");
 const { getPlaygroundUrl } = require("livecodes");
 
 const sha = process.env.SHA || "";
+const ref = process.env.REF || "";
+const repo = process.env.REPO || "";
 
 const rootDir = ".livecodes";
 
-const filesToDataUrls = (str) => {
+const replaceValues = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
-  return str.replace(new RegExp(pattern), (_match, file) => {
-    try {
-      const type = mime.getType(file) || "text/javascript";
-      const content = fs.readFileSync(file, "utf8");
-      return content ? toDataUrl(content, type) : file;
-    } catch {
-      return file;
-    }
-  });
+  return str
+    .replace(new RegExp(pattern), (_match, file) => {
+      try {
+        const type = mime.getType(file) || "text/javascript";
+        const content = fs.readFileSync(file, "utf8");
+        return content ? toDataUrl(content, type) : file;
+      } catch {
+        return file;
+      }
+    })
+    .replace(/{{\s*LIVECODES::SHA\s*}}/g, sha)
+    .replace(/{{\s*LIVECODES::REF\s*}}/g, ref)
+    .replace(/{{\s*LIVECODES::REPO\s*}}/g, repo);
 };
 
 const getProjects = () => {
@@ -31,7 +36,7 @@ const getProjects = () => {
       try {
         const path = `${rootDir}/${file}`;
         const content = fs.readFileSync(path, "utf8");
-        const contentWithUrls = filesToDataUrls(content);
+        const contentWithUrls = replaceValues(content);
         const options = JSON.parse(contentWithUrls);
         const isConfig = !Object.keys(options).find((key) =>
           [
