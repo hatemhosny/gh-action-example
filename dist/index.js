@@ -31256,9 +31256,20 @@ const getConfigs = () => {
         return;
       }
     })
-    .filter(Boolean);
+    .reduce(
+      (acc, cur, idx) =>
+        !cur
+          ? acc
+          : {
+              ...acc,
+              [`${cur.title || removeExtension(files[idx])}`]: cur,
+            },
+      {}
+    );
   return configs;
 };
+
+const removeExtension = (path) => path.split(".").slice(0, -1).join(".");
 
 try {
   if (!fs.existsSync(rootDir)) {
