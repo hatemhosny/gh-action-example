@@ -37,15 +37,15 @@ runs:
       run: ${{ inputs.build-command }}
       shell: bash
 
-    - name: Comment PR with execution number
-      uses: thollander/actions-comment-pull-request@v2
-      with:
-        message: |
-          hi there
-        comment_tag: execution
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-
     - name: run action
       id: hello
       run: node ${{ github.action_path }}/dist/index.js
       shell: bash
+
+    - name: Comment PR with execution number
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          time: ${{ steps.hello.outputs.time }}
+        comment_tag: execution
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
