@@ -6,7 +6,6 @@ const core = require("@actions/core");
 const { getPlaygroundUrl } = require("livecodes");
 
 const sha = process.env.SHA || "";
-console.log("sha", sha);
 
 const rootDir = ".livecodes";
 
@@ -91,8 +90,10 @@ try {
     });
     return { title: key, url: playgroundUrl };
   });
-  console.log(projects);
-  core.setOutput("message", generateOutput(projects));
+
+  const message = generateOutput(projects);
+  console.log(message);
+  core.setOutput("message", message);
 
   const fileList = ["dist/index.txt"];
 
