@@ -57,3 +57,4 @@ runs:
         message: |
           _(execution hi there)_
         comment_tag: execution
+        GITHUB_TOKEN: ${{ github.token }}
