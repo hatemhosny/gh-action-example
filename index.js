@@ -59,11 +59,11 @@ const generateOutput = (projects) => {
   return `
 ## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>!
 
-**Latest commit:** \`${sha}\`
+**Latest commit:** ${sha}
 
 |  Project | Link |
 |:-:|------------------------|
-${projectsMarkDown.join("\\n")}
+${projectsMarkDown.join("\n")}
 <!-- 
 ---
 
