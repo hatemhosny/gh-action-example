@@ -1,5 +1,5 @@
-name: "Hello World"
-description: "Greet someone and record the time"
+name: "Preview in LiveCodes"
+description: "Preview the changes in LiveCodes playground"
 
 inputs:
   install-command:
@@ -14,11 +14,6 @@ inputs:
     description: "Github token of the repository (automatically created by Github)"
     default: ${{ github.token }}
     required: true
-
-outputs:
-  time: # id of output
-    description: "The time we greeted you"
-    value: ${{ steps.hello.outputs.time }}
 
 runs:
   using: "composite"
@@ -37,10 +32,10 @@ runs:
       run: ${{ inputs.build-command }}
       shell: bash
 
-    - name: run action
-      id: hello
+    - name: Generate output
+      id: generate_output
       shell: bash
-      run: node ${{ github.action_path }}/dist/index.js
+      run: node ${{ github.action_path }}/dist/index.js "${{ github.event.pull_request.head.sha }}"
 
     - name: Save output and PR number
       shell: bash
@@ -48,7 +43,7 @@ runs:
         mkdir -p ./pr
         echo ${{ github.event.number }} > ./pr/NR
         echo ${{ github.event.pull_request.head.sha }} > ./pr/SHA
-        echo "${{ steps.hello.outputs.time }}" > ./pr/${{ github.event.number }}.md
+        echo "${{ steps.generate_output.outputs.message }}" > ./pr/${{ github.event.number }}.md
 
     - uses: actions/upload-artifact@v2
       with:

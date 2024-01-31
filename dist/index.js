@@ -31246,6 +31246,9 @@ const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 const { getPlaygroundUrl } = __nccwpck_require__(7834);
 
+const args = process.argv.slice(2);
+const sha = args[0]?.trim();
+
 const rootDir = ".livecodes";
 
 const toDataUrl = (content, type) =>
@@ -31280,6 +31283,38 @@ const getConfigs = () => {
 
 const removeExtension = (path) => path.split(".").slice(0, -1).join(".");
 
+const trimLongUrl = (url, max) => {
+  if (url.length > max) {
+    return url.slice(0, max) + "...";
+  }
+  return url;
+};
+
+const generateOutput = (projects) => {
+  const projectsMarkDown = projects.map(
+    (project) =>
+      `| **${project.title}** | [${trimLongUrl(project.url, 50)}](${
+        project.url
+      }) |`
+  );
+
+  return `
+## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>!
+
+**Latest commit:** \`${sha}\`
+
+|  Project | Link |
+|:-:|------------------------|
+${projectsMarkDown.join("\\n")}
+<!-- 
+---
+
+_See the [documentations](https://livecodes.io/?x=code/ksjdhfkhdghdg...) for more details._
+
+-->
+  `;
+};
+
 try {
   if (!fs.existsSync(rootDir)) {
     console.error(`Directory ${rootDir} does not exist.`);
@@ -31290,13 +31325,15 @@ try {
     console.error(`No configuration files found in ${rootDir}.`);
   }
 
-  Object.keys(configs).forEach((key) => {
+  const projects = Object.keys(configs).map((key) => {
     const config = configs[key];
     const playgroundUrl = getPlaygroundUrl({
       config,
     });
-    console.log(key, playgroundUrl);
+    return { title: key, url: playgroundUrl };
   });
+
+  core.setOutput("message", generateOutput(projects));
 
   const fileList = ["dist/index.txt"];
 
@@ -31305,9 +31342,6 @@ try {
     const mime_type = mime.getType(file) || "text/javascript";
     console.log(toDataUrl(text, mime_type));
   });
-
-  const time = new Date().toTimeString();
-  core.setOutput("time", time);
 } catch (error) {
   core.setFailed(error.message);
 }
