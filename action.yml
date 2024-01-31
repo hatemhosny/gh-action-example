@@ -48,7 +48,6 @@ runs:
         mkdir -p ./pr
         echo ${{ github.event.number }} > ./pr/NR
         echo "${{ steps.hello.outputs.time }}" > ./pr/${{ github.event.number }}.md
-        cp ${{ github.action_path }}/add-comment.js ./pr/script.js
 
     - uses: actions/upload-artifact@v2
       with:
