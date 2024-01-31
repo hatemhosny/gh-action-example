@@ -35,7 +35,7 @@ runs:
     - name: Generate output
       id: generate_output
       shell: bash
-      run: node ${{ github.action_path }}/dist/index.js ${{ github.event.pull_request.head.sha }}
+      run: node ${{ github.action_path }}/dist/index.js --sha=${{ github.event.pull_request.head.sha }}
 
     - name: Save output and PR number
       shell: bash

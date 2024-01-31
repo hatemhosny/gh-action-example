@@ -6,8 +6,10 @@ const core = require("@actions/core");
 const { getPlaygroundUrl } = require("livecodes");
 
 const args = process.argv.slice(2);
-const sha = args[0]?.trim();
+const shaArg = args[0].split("=");
+const sha = shaArg[0] === "--sha" ? shaArg[1] : "";
 console.log("sha", sha);
+
 const rootDir = ".livecodes";
 
 const toDataUrl = (content, type) =>
