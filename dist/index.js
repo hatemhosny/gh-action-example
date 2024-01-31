@@ -27049,11 +27049,9 @@ const rootDir = ".livecodes";
 const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
-  return str.replace(pattern, (match, file) => {
-    console.log(__dirname);
-    console.log("file", file);
-    const content = fs.readFileSync(path.resolve(file), "utf8");
+  return str.replace(new RegExp(pattern), (match, file) => {
     const type = mime.getType(file) || "text/javascript";
+    const content = fs.readFileSync(file, "utf8");
     return content ? toDataUrl(content, type) : match;
   });
 };
