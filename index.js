@@ -12,15 +12,27 @@ const rootDir = ".livecodes";
 const toDataUrl = (content, type) =>
   `data:${type};charset=UTF-8;base64,` + encode(content, true);
 
-const getConfigs = () => {
+const getProjects = () => {
   const files = fs.readdirSync(rootDir);
-  const configs = files
+  return files
     .map((file) => {
       try {
         const path = `${rootDir}/${file}`;
         const content = fs.readFileSync(path, "utf8");
-        const config = JSON.parse(content);
-        return config;
+        const options = JSON.parse(content);
+        const isConfig = !Object.keys(options).find((key) =>
+          [
+            "appUrl",
+            "config",
+            "params",
+            "import",
+            "template",
+            "view",
+            "lite",
+            "loading",
+          ].includes(key)
+        );
+        return isConfig ? { config: options } : options;
       } catch (error) {
         console.error(error);
         return;
@@ -32,11 +44,10 @@ const getConfigs = () => {
           ? acc
           : {
               ...acc,
-              [`${cur.title || removeExtension(files[idx])}`]: cur,
+              [`${cur.config?.title || removeExtension(files[idx])}`]: cur,
             },
       {}
     );
-  return configs;
 };
 
 const removeExtension = (path) => path.split(".").slice(0, -1).join(".");
@@ -78,21 +89,18 @@ try {
     console.error(`Directory ${rootDir} does not exist.`);
   }
 
-  const configs = getConfigs();
-  if (Object.keys(configs).length === 0) {
+  const projectOptions = getProjects();
+  if (Object.keys(projectOptions).length === 0) {
     console.error(`No configuration files found in ${rootDir}.`);
   }
 
-  const projects = Object.keys(configs).map((key) => {
-    const config = configs[key];
-    const playgroundUrl = getPlaygroundUrl({
-      config,
-    });
+  const projects = Object.keys(projectOptions).map((key) => {
+    const options = projectOptions[key];
+    const playgroundUrl = getPlaygroundUrl(options);
     return { title: key, url: playgroundUrl };
   });
 
   const message = generateOutput(projects);
-  console.log(message);
   core.setOutput("message", message);
 
   const fileList = ["dist/index.txt"];
