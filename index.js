@@ -7,7 +7,7 @@ const { getPlaygroundUrl } = require("livecodes");
 
 const args = process.argv.slice(2);
 const sha = args[0]?.trim();
-
+console.log("sha", sha);
 const rootDir = ".livecodes";
 
 const toDataUrl = (content, type) =>
