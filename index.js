@@ -17,7 +17,8 @@ const filesToDataUrls = (str) => {
     console.log(__dirname);
     console.log("file", file);
     const content = fs.readFileSync(path.resolve(file), "utf8");
-    return content ? toDataUrl(content, "text/javascript") : match;
+    const type = mime.getType(file) || "text/javascript";
+    return content ? toDataUrl(content, type) : match;
   });
 };
 
