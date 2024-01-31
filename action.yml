@@ -50,3 +50,10 @@ runs:
       id: hello
       run: node ${{ github.action_path }}/dist/index.js "${{ inputs.file-list }}"
       shell: bash
+
+    - name: Comment PR with execution number
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          _(execution **${{ github.run_id }}** / attempt **${{ github.run_attempt }}**)_
+        comment_tag: execution
