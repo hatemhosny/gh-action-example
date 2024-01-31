@@ -27049,14 +27049,17 @@ const rootDir = ".livecodes";
 const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
-  return str.replace(new RegExp(pattern), (match, file) => {
+  return str.replace(new RegExp(pattern), (_match, file) => {
     const type = mime.getType(file) || "text/javascript";
+    console.log(__dirname);
     const content = fs.readFileSync(file, "utf8");
-    return content ? toDataUrl(content, type) : match;
+    return content ? toDataUrl(content, type) : file;
   });
 };
 
 const getProjects = () => {
+  console.log(__dirname);
+
   const files = fs.readdirSync(rootDir);
   return files
     .map((file) => {
@@ -27160,13 +27163,15 @@ try {
   const message = generateOutput(projects);
   core.setOutput("message", message);
 
-  // const fileList = ["dist/index.txt"];
+  const fileList = ["dist/index.txt"];
 
-  // fileList.forEach((file) => {
-  //   const text = fs.readFileSync(file, "utf8");
-  //   const mime_type = mime.getType(file) || "text/javascript";
-  //   console.log(toDataUrl(text, mime_type));
-  // });
+  fileList.forEach((file) => {
+    console.log(__dirname);
+
+    const text = fs.readFileSync(file, "utf8");
+    const mime_type = mime.getType(file) || "text/javascript";
+    console.log(toDataUrl(text, mime_type));
+  });
 } catch (error) {
   core.setFailed(error.message);
 }
