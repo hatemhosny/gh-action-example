@@ -27041,8 +27041,8 @@ const mime = __nccwpck_require__(9994);
 const core = __nccwpck_require__(2186);
 const { getPlaygroundUrl } = __nccwpck_require__(7834);
 
-const args = process.argv.slice(2);
-const sha = args[0]?.trim();
+const sha = process.env.SHA || "";
+console.log("sha", sha);
 
 const rootDir = ".livecodes";
 

@@ -5,9 +5,7 @@ const mime = require("mime");
 const core = require("@actions/core");
 const { getPlaygroundUrl } = require("livecodes");
 
-const args = process.argv.slice(2);
-const shaArg = args[0].split("=");
-const sha = shaArg[0] === "--sha" ? shaArg[1] : "";
+const sha = process.env.SHA || "";
 console.log("sha", sha);
 
 const rootDir = ".livecodes";
