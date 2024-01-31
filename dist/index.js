@@ -31237,27 +31237,21 @@ const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
 const args = process.argv.slice(2);
-const toDataUrl = (content, type = "text/javascript") =>
+const toDataUrl = (content, type) =>
   `data:${type};charset=UTF-8;base64,` + encode(content, true);
 
 try {
-  const fileMapInput = args[0].trim();
-  if (fileMapInput) {
-    const fileMap = fileMapInput
-      .split(",")
-      .filter(Boolean)
+  const fileList =
+    args[0]
+      ?.split(",")
       .map((x) => x.trim())
-      .reduce(
-        (acc, cur) => ({ ...acc, [cur.split(":")[0]]: cur.split(":")[1] }),
-        {}
-      );
+      .filter(Boolean) || [];
 
-    Object.keys(fileMap).forEach((key) => {
-      const text = fs.readFileSync(fileMap[key], "utf8");
-      const mime_type = mime.getType(fileMap[key]);
-      console.log(toDataUrl(text, mime_type));
-    });
-  }
+  fileList.forEach((file) => {
+    const text = fs.readFileSync(file, "utf8");
+    const mime_type = mime.getType(file) || "text/javascript";
+    console.log(toDataUrl(text, mime_type));
+  });
 
   const time = new Date().toTimeString();
   core.setOutput("time", time);

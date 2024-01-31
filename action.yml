@@ -15,8 +15,8 @@ inputs:
     description: "Build command - optional (e.g. npm run build)"
     required: false
 
-  file-map:
-    description: "Map of files to copy"
+  file-list:
+    description: "List of files to copy"
     required: false
 
   GITHUB_TOKEN:
@@ -48,5 +48,5 @@ runs:
 
     - name: run action
       id: hello
-      run: node ${{ github.action_path }}/dist/index.js "${{ inputs.file-map }}"
+      run: node ${{ github.action_path }}/dist/index.js "${{ inputs.file-list }}"
       shell: bash
