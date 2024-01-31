@@ -14,6 +14,7 @@ const filesToDataUrls = (str) => {
   const pattern =
     /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str.replace(pattern, (match, file) => {
+    console.log(__dirname);
     console.log("file", file);
     const content = fs.readFileSync(path.resolve(file), "utf8");
     return content ? toDataUrl(content, "text/javascript") : match;
@@ -124,13 +125,13 @@ try {
   const message = generateOutput(projects);
   core.setOutput("message", message);
 
-  const fileList = ["dist/index.txt"];
+  // const fileList = ["dist/index.txt"];
 
-  fileList.forEach((file) => {
-    const text = fs.readFileSync(file, "utf8");
-    const mime_type = mime.getType(file) || "text/javascript";
-    console.log(toDataUrl(text, mime_type));
-  });
+  // fileList.forEach((file) => {
+  //   const text = fs.readFileSync(file, "utf8");
+  //   const mime_type = mime.getType(file) || "text/javascript";
+  //   console.log(toDataUrl(text, mime_type));
+  // });
 } catch (error) {
   core.setFailed(error.message);
 }
