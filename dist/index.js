@@ -31236,11 +31236,39 @@ const mime = __nccwpck_require__(9994);
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
+const rootDir = ".livecodes";
 const args = process.argv.slice(2);
+
 const toDataUrl = (content, type) =>
   `data:${type};charset=UTF-8;base64,` + encode(content, true);
 
+const getConfigs = () => {
+  const files = fs.readdirSync(rootDir);
+  const configs = files
+    .map((file) => {
+      try {
+        const path = `${rootDir}/${file}`;
+        const content = fs.readFileSync(path, "utf8");
+        const config = JSON.parse(content);
+        return config;
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    })
+    .filter(Boolean);
+  return configs;
+};
+
 try {
+  if (!fs.existsSync(rootDir)) {
+    console.error(`Directory ${rootDir} does not exist.`);
+    throw new Error(`Directory ${rootDir} does not exist.`);
+  }
+
+  const configs = getConfigs();
+  console.log(configs);
+
   const fileList =
     args[0]
       ?.split(",")
