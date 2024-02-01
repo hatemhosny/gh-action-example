@@ -1,5 +1,5 @@
 {
-  "name": "livecodes",
+  "name": "preview-in-livecodes",
   "version": "1.0.0",
   "description": "Preview recent changes in LiveCodes playground!",
   "main": "index.js",

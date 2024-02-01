@@ -1,9 +1,8 @@
 const fs = require("fs");
-const { encode } = require("js-base64");
-const mime = require("mime");
-
 const core = require("@actions/core");
 const { getPlaygroundUrl } = require("livecodes");
+const { encode } = require("js-base64");
+const mime = require("mime");
 
 const sha = process.env.SHA || "";
 const ref = process.env.REF || "";
@@ -13,13 +12,16 @@ const baseUrl = (process.env.BASE_URL || "")
   .replace(/{{\s*LC::REF\s*}}/g, ref)
   .replace(/{{\s*LC::REPO\s*}}/g, repo);
 
-const rootDir = ".livecodes";
+const projectsRoot = ".livecodes";
 
 const replaceValues = (str) => {
   const getPattern = (type = "TO_DATA_URL") =>
     `{{\\s*LC::${type}\\(['"]?(?:\\.[\\/\\\\])?([^\\)'"]+)['"]?\\)\\s*}}`;
 
   return str
+    .replace(/{{\s*LC::SHA\s*}}/g, sha)
+    .replace(/{{\s*LC::REF\s*}}/g, ref)
+    .replace(/{{\s*LC::REPO\s*}}/g, repo)
     .replace(new RegExp(getPattern("TO_DATA_URL"), "g"), (_match, file) => {
       try {
         const type = mime.getType(file) || "text/javascript";
@@ -36,18 +38,15 @@ const replaceValues = (str) => {
       } catch {
         return file;
       }
-    })
-    .replace(/{{\s*LC::SHA\s*}}/g, sha)
-    .replace(/{{\s*LC::REF\s*}}/g, ref)
-    .replace(/{{\s*LC::REPO\s*}}/g, repo);
+    });
 };
 
 const getProjects = () => {
-  const files = fs.readdirSync(rootDir);
+  const files = fs.readdirSync(projectsRoot);
   return files
     .map((file) => {
       try {
-        const path = `${rootDir}/${file}`;
+        const path = `${projectsRoot}/${file}`;
         const content = fs.readFileSync(path, "utf8");
         const contentWithUrls = replaceValues(content);
         const options = JSON.parse(contentWithUrls);
@@ -118,23 +117,20 @@ const generateOutput = (projects) => {
 |  Project | Link |
 |:-:|------------------------|
 ${projectsMarkDown.join("\n")}
-<!-- 
 ---
 
-_See the [documentations](https://livecodes.io/docs) for more details._
-
--->
+_See [LiveCodes documentations](https://livecodes.io/docs) for more details._
   `;
 };
 
 try {
-  if (!fs.existsSync(rootDir)) {
-    console.error(`Directory ${rootDir} does not exist.`);
+  if (!fs.existsSync(projectsRoot)) {
+    console.error(`Directory ${projectsRoot} does not exist.`);
   }
 
   const projectOptions = getProjects();
   if (Object.keys(projectOptions).length === 0) {
-    console.error(`No configuration files found in ${rootDir}.`);
+    console.error(`No configuration files found in ${projectsRoot}.`);
   }
 
   const projects = Object.keys(projectOptions).map((key) => {
@@ -145,14 +141,6 @@ try {
 
   const message = generateOutput(projects);
   core.setOutput("message", message);
-
-  const fileList = ["dist/index.txt"];
-
-  fileList.forEach((file) => {
-    const text = fs.readFileSync(file, "utf8");
-    const mime_type = mime.getType(file) || "text/javascript";
-    console.log(toDataUrl(text, mime_type));
-  });
 } catch (error) {
   core.setFailed(error.message);
 }
