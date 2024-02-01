@@ -1,6 +1,6 @@
 # Preview in LiveCodes
 
-This is a GitHub action that allows to generate links to [LiveCodes playground](https://livecodes.io) to preview code changes and save them in an artifact. This can be used to post them to the pull request as comments.
+This is a GitHub action that generates preview links to [LiveCodes playground](https://livecodes.io) for code changes in pull requests and posts them as pull request comments.
 
 This can be useful for library authors to preview changes in the playground before merging the pull request.
 
@@ -114,13 +114,18 @@ jobs:
 
 ## Using Newly Added Code in Playgrounds
 
-The new code added by the PR needs to be available for the playgrounds.
+The new code added by the PR needs to be available as assets for the playgrounds (e.g. scripts, stylesheets, etc.).
 
-The available options include:
+The action allows installing dependencies and building the project, using the `install-command` and `build-command` inputs.
 
-- You already deploy the project to a preview URL using services like [Cloudflare Pages](https://pages.cloudflare.com/), [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/). Then you can link to the deployed assets in the playgrounds. Add the base URL that points to the deployment as the action `base-url` input. This input can include [dynamic values](#dynamic-values). Then in the project JSON, you can refer to the deployed assets like this: `{{LC::TO_URL(./file.js)}}`.
+To use the files in the playgrounds, the available options include:
 
-- Encode the assets as [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs). Then in the project JSON, you can refer to the encoded assets like this: `{{LC::TO_DATA_URL(./file.js)}}`. Please note that this is only recommended for small files, because this will be encoded in the preview URL.
+- You already deploy the project to a preview URL using a service like [Cloudflare Pages](https://pages.cloudflare.com/), [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/). Then you can link to the deployed assets in the playgrounds. Add the base URL that points to the deployment as the action `base-url` input. This input can include [dynamic values](#dynamic-values) (e.g. `base-url: "https://{{LC::REF}}.my-project.pages.dev"`). Then in the project JSON, you can refer to the deployed assets like this: `{{LC::TO_URL(./file.js)}}`.
+
+- The assets used in playgrounds are (pre-built and) committed in the pull request. You can refer to them using CDNs that mirror GitHub like [jsDelivr](https://www.jsdelivr.com/) (e.g. `https://cdn.jsdelivr.net/gh/my-username/my-repo@new-branch/file.js`).  
+  You may also use the `base-url` input with dynamic values like `{{LC::SHA}}`, `{{LC::REF}}` or `{{LC::REPO}}` (e.g. `base-url: "https://cdn.jsdelivr.net/gh/{{LC::REPO}}@{{LC::SHA}}/"`), and refer to the assets as `{{LC::TO_URL(./file.js)}}`.
+
+- The action can encode the assets as [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) automatically when referred to in the playground. Then in the project JSON, you can refer to the encoded assets like this: `{{LC::TO_DATA_URL(./file.js)}}`. Please note that this is only recommended for small files, because the contents of these files will be encoded in the preview URL.
 
 ## Dynamic Values
 
