@@ -1,17 +1,23 @@
 {
-  "name": "gh-action-example",
+  "name": "livecodes",
   "version": "1.0.0",
-  "description": "",
+  "description": "Preview recent changes in LiveCodes playground!",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js --license licenses.txt"
+    "build": "ncc build index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "livecodes",
+    "actions",
+    "gh-action",
+    "ci",
+    "preview",
+    "playground"
+  ],
+  "author": "Hatem Hosny",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "1.10.1",
-    "@actions/github": "6.0.0",
     "@vercel/ncc": "0.38.1",
     "js-base64": "3.7.6",
     "livecodes": "0.4.0",

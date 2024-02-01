@@ -27049,7 +27049,7 @@ const rootDir = ".livecodes";
 
 const replaceValues = (str) => {
   const pattern =
-    /{{\s*LIVECODES::TO_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
+    /{{\s*LIVECODES::TO_DATA_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
   return str
     .replace(new RegExp(pattern), (_match, file) => {
       try {
@@ -27144,7 +27144,7 @@ ${projectsMarkDown.join("\n")}
 <!-- 
 ---
 
-_See the [documentations](https://livecodes.io/?x=code/ksjdhfkhdghdg...) for more details._
+_See the [documentations](https://livecodes.io/docs) for more details._
 
 -->
   `;

@@ -18,7 +18,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v3.6.0
+    - uses: actions/setup-node@v4
       with:
         node-version: 20
 
@@ -47,7 +47,9 @@ runs:
         mkdir -p ./pr
         echo "${{ steps.generate_output.outputs.message }}" > ./pr/${{ github.event.number }}.md
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: pr
         path: pr/
+        retention-days: 1
+        overwrite: true
