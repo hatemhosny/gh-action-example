@@ -10,7 +10,7 @@ This can be useful for library authors to preview changes in the playground befo
 
 - `install-command` (Optional): Install command (e.g. `npm install`)
 - `build-command` (Optional): Build command (e.g. `npm run build`)
-- `base-url` (Optional): Base URL used to link to built files using the pattern: `{{LC::TO_URL(./file.js)}}`
+- `base-url` (Optional): Base URL used to link to deployed files using the pattern: `{{LC::TO_URL(./file.js)}}`
 - `artifact` (Optional): Artifact name used to save the message (default: `pr`)
 - `GITHUB_TOKEN`: Github token of the repository (default: `${{ github.token }}` - automatically created by Github)
 
@@ -20,7 +20,7 @@ This can be useful for library authors to preview changes in the playground befo
 
 ## Usage
 
-This action generates the message for the PR comment and uploads it as an artifact. It can be used in conjunction with the action [`live-codes/pr-comment-from-artifact`](https://github.com/live-codes/pr-comment-from-artifact). Two different actions are used because each runs in a different context and requires different permissions. See [this article](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) for more details.
+This action generates the message for the PR comment and uploads it as an artifact. It can be used in conjunction with the action [`live-codes/pr-comment-from-artifact`](https://github.com/live-codes/pr-comment-from-artifact) which posts the message in artifact as a comment in the PR. Two different actions are used because each runs in a different context and requires different permissions. See [this article](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) for more details.
 
 This is an example for usage:
 
@@ -55,6 +55,8 @@ export const demo = () => {
 }
 ```
 
+Multiple playgrounds can be created by adding multiple JSON files in the same `.livecodes` folder. The [`title`](https://livecodes.io/docs/configuration/configuration-object#title) property of the [configuration object](https://livecodes.io/docs/configuration/configuration-object) is used as the playground name in the message, otherwise the filename is used.
+
 Note the use of `{{LC::TO_DATA_URL(./index.js)}}` in the [imports](https://livecodes.io/docs/features/module-resolution#custom-module-resolution) property. The file `index.js` is converted to a [data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) and imported in the playground. See later for more details and other options.
 
 - Trigger the action when a pull request is created or updated:
@@ -82,9 +84,9 @@ jobs:
           # base-url: "https://{{LC::REF}}.my-project.pages.dev"
 ```
 
-When new pull requests are created or updated, the action will run. It can optionally install dependencies and build the project. Then it looks for LiveCodes projects in the directory `.livecodes` and generates playgrounds for each. The generated message is saved as an artifact.
+When new pull requests are created or updated, the action will run. It can optionally install dependencies and build the project. Then it looks for LiveCodes projects in the directory `.livecodes` and generates playgrounds for each and adds their links to the message. The generated message is saved as an artifact.
 
-- Then this action, which is triggered by the successful previous workflow, downloads the artifact and posts it as a comment in the pull request, using the available permissions:
+- Then the following action, which is triggered by the successful previous workflow, downloads the artifact and posts it as a comment in the pull request, using the available permissions:
 
 **.github/workflows/livecodes-post-comment.yml**
 
@@ -125,7 +127,7 @@ To use the files in the playgrounds, the available options include:
 - The assets used in playgrounds are (pre-built and) committed in the pull request. You can refer to them using CDNs that mirror GitHub like [jsDelivr](https://www.jsdelivr.com/) (e.g. `https://cdn.jsdelivr.net/gh/my-username/my-repo@new-branch/file.js`).  
   You may also use the `base-url` input with dynamic values like `{{LC::SHA}}`, `{{LC::REF}}` or `{{LC::REPO}}` (e.g. `base-url: "https://cdn.jsdelivr.net/gh/{{LC::REPO}}@{{LC::SHA}}/"`), and refer to the assets as `{{LC::TO_URL(./file.js)}}`.
 
-- The action can encode the assets as [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) automatically when referred to in the playground. Then in the project JSON, you can refer to the encoded assets like this: `{{LC::TO_DATA_URL(./file.js)}}`. Please note that this is only recommended for small files, because the contents of these files will be encoded in the preview URL.
+- The action can encode the files as [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) automatically when referred to in the playground. In the project JSON, you can refer to the encoded assets like this: `{{LC::TO_DATA_URL(./file.js)}}`. Please note that this is only recommended for small files, because the contents of these files will be encoded in the preview URL.
 
 ## Dynamic Values
 
@@ -135,7 +137,7 @@ The following values are made available in the project JSON and in `base-url` in
 - `{{LC::SHA}}`: The full SHA of the commit.
 - `{{LC::REPO}}`: The name of the repository.
 
-In addition, you can use the following to refer to files in the repository:
+In addition, in project JSON, you can use the following to refer to files in the repository:
 
 - `{{LC::TO_URL(./file.js)}}`: The URL of the file `./file.js` with the `base-url` value prepended. The input `base-url` is required in this case.
 - `{{LC::TO_DATA_URL(./file.js)}}`: Converts the file `./file.js` to a [data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs) and uses it.
