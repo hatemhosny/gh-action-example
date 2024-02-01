@@ -1,5 +1,8 @@
 name: "Preview in LiveCodes"
 description: "Preview the changes in LiveCodes playground"
+branding:
+  icon: code
+  color: white
 
 inputs:
   install-command:
@@ -11,7 +14,7 @@ inputs:
     required: false
 
   base-url:
-    description: "Base URL used for the pattern: {{ LC::TO_URL('./file.js') }} - optional"
+    description: "Base URL used for the pattern: {{LC::TO_URL(./file.js)}} - optional"
     required: false
 
   GITHUB_TOKEN:
@@ -22,16 +25,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
       with:
         node-version: 20
 
-    - name: install
+    - name: Install
       if: ${{ inputs.install-command }}
       run: ${{ inputs.install-command }}
       shell: bash
 
-    - name: build
+    - name: Build
       if: ${{ inputs.build-command }}
       run: ${{ inputs.build-command }}
       shell: bash
@@ -52,7 +56,8 @@ runs:
         mkdir -p ./pr
         echo "${{ steps.generate_output.outputs.message }}" > ./pr/${{ github.event.number }}.md
 
-    - uses: actions/upload-artifact@v4
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
       with:
         name: pr
         path: pr/
