@@ -27044,14 +27044,19 @@ const { getPlaygroundUrl } = __nccwpck_require__(7834);
 const sha = process.env.SHA || "";
 const ref = process.env.REF || "";
 const repo = process.env.REPO || "";
+const baseUrl = (process.env.BASE_URL || "")
+  .replace(/{{\s*LC::SHA\s*}}/g, sha)
+  .replace(/{{\s*LC::REF\s*}}/g, ref)
+  .replace(/{{\s*LC::REPO\s*}}/g, repo);
 
 const rootDir = ".livecodes";
 
 const replaceValues = (str) => {
-  const pattern =
-    /{{\s*LIVECODES::TO_DATA_URL\(['"]?(?:\.[\/\\])?([^\)'"]+)['"]?\)\s*}}/g;
+  const getPattern = (type = "TO_DATA_URL") =>
+    `{{\\s*LC::${type}\\(['"]?(?:\\.[\\/\\\\])?([^\\)'"]+)['"]?\\)\\s*}}`;
+
   return str
-    .replace(new RegExp(pattern), (_match, file) => {
+    .replace(new RegExp(getPattern("TO_DATA_URL"), "g"), (_match, file) => {
       try {
         const type = mime.getType(file) || "text/javascript";
         const content = fs.readFileSync(file, "utf8");
@@ -27060,9 +27065,17 @@ const replaceValues = (str) => {
         return file;
       }
     })
-    .replace(/{{\s*LIVECODES::SHA\s*}}/g, sha)
-    .replace(/{{\s*LIVECODES::REF\s*}}/g, ref)
-    .replace(/{{\s*LIVECODES::REPO\s*}}/g, repo);
+    .replace(new RegExp(getPattern("TO_URL"), "g"), (_match, file) => {
+      if (!baseUrl) return file;
+      try {
+        return new URL(file, baseUrl).href;
+      } catch {
+        return file;
+      }
+    })
+    .replace(/{{\s*LC::SHA\s*}}/g, sha)
+    .replace(/{{\s*LC::REF\s*}}/g, ref)
+    .replace(/{{\s*LC::REPO\s*}}/g, repo);
 };
 
 const getProjects = () => {

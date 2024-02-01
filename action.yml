@@ -10,6 +10,10 @@ inputs:
     description: "Build command - optional (e.g. npm run build)"
     required: false
 
+  base-url:
+    description: "Base URL used for the pattern: {{ LC::TO_URL('./file.js') }} - optional"
+    required: false
+
   GITHUB_TOKEN:
     description: "Github token of the repository (automatically created by Github)"
     default: ${{ github.token }}
@@ -40,6 +44,7 @@ runs:
         SHA: ${{ github.event.pull_request.head.sha }}
         REF: ${{ github.event.pull_request.head.ref }}
         REPO: ${{ github.repository }}
+        BASE_URL: ${{ inputs.base-url }}
 
     - name: Save output and PR number
       shell: bash
