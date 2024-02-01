@@ -110,7 +110,7 @@ const generateOutput = (projects) => {
   );
 
   return `
-## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>!
+## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>
 
 **Latest commit:** ${sha}
 
@@ -119,7 +119,7 @@ const generateOutput = (projects) => {
 ${projectsMarkDown.join("\n")}
 ---
 
-_See [LiveCodes documentations](https://livecodes.io/docs) for more details._
+_See [LiveCodes documentation](https://livecodes.io/docs) for more details._
   `;
 };
 
