@@ -27205,7 +27205,7 @@ const run = async () => {
         // sequential requests and delay to respect rate limit of 1 request/second
         await new Promise((resolve) => setTimeout(resolve, 1500));
         const id = await uploadConfig(options.config);
-        options.params = { ...options.params, x: "id/" + id };
+        options.import = "id/" + id;
         delete options.config;
       }
       const playgroundUrl = getPlaygroundUrl(options);
