@@ -147,7 +147,7 @@ const generateOutput = (projects) => {
 ${projectsMarkDown.join("\n")}
 ---
 
-_See [LiveCodes documentation](https://livecodes.io/docs) for more details._
+_See [documentations](https://github.com/live-codes/preview-in-livecodes) for usage instructions._
   `;
 };
 
