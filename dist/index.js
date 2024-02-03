@@ -27077,6 +27077,31 @@ const replaceValues = (str) => {
     });
 };
 
+const uploadConfig = async (config) => {
+  const dpasteGetUrl = "https://dpaste.com/";
+  const dpastePostUrl = "https://dpaste.com/api/v2/";
+  try {
+    const res = await fetch(dpastePostUrl, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "LiveCodes / https://livecodes.io/",
+      },
+      body: `content=${encodeURIComponent(
+        JSON.stringify(config)
+      )}&title=${encodeURIComponent(
+        config.title || ""
+      )}&syntax=json&expiry_days=365`,
+    });
+    if (!res.ok) return "";
+    const url = await res.text();
+    return url.replace(dpasteGetUrl, "");
+  } catch (error) {
+    return "";
+  }
+};
+
 const getProjects = () => {
   const files = fs.readdirSync(projectsRoot);
   return files
@@ -27084,6 +27109,7 @@ const getProjects = () => {
       try {
         const path = `${projectsRoot}/${file}`;
         const content = fs.readFileSync(path, "utf8");
+        const hasDataUrls = content.includes("{{LC::TO_DATA_URL");
         const contentWithUrls = replaceValues(content);
         const options = JSON.parse(contentWithUrls);
         const isConfig = !Object.keys(options).find((key) =>
@@ -27098,7 +27124,9 @@ const getProjects = () => {
             "loading",
           ].includes(key)
         );
-        return isConfig ? { config: options } : options;
+        return isConfig
+          ? { config: options, hasDataUrls }
+          : { hasDataUrls, ...options };
       } catch (error) {
         console.error(error);
         return;
@@ -27159,27 +27187,38 @@ _See [LiveCodes documentation](https://livecodes.io/docs) for more details._
   `;
 };
 
-try {
-  if (!fs.existsSync(projectsRoot)) {
-    console.error(`Directory ${projectsRoot} does not exist.`);
+const run = async () => {
+  try {
+    if (!fs.existsSync(projectsRoot)) {
+      console.error(`Directory ${projectsRoot} does not exist.`);
+    }
+
+    const projectOptions = getProjects();
+    if (Object.keys(projectOptions).length === 0) {
+      console.error(`No configuration files found in ${projectsRoot}.`);
+    }
+
+    const projects = [];
+    for (const key in projectOptions) {
+      const { hasDataUrls, ...options } = projectOptions[key];
+      if (hasDataUrls && options.config) {
+        // sequential requests and delay to respect rate limit of 1 request/second
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const id = await uploadConfig(options.config);
+        options.params = { ...options.params, x: "id/" + id };
+      }
+      const playgroundUrl = getPlaygroundUrl(options);
+      projects.push({ title: key, url: playgroundUrl });
+    }
+
+    const message = generateOutput(projects);
+    core.setOutput("message", message);
+  } catch (error) {
+    core.setFailed(error.message);
   }
+};
 
-  const projectOptions = getProjects();
-  if (Object.keys(projectOptions).length === 0) {
-    console.error(`No configuration files found in ${projectsRoot}.`);
-  }
-
-  const projects = Object.keys(projectOptions).map((key) => {
-    const options = projectOptions[key];
-    const playgroundUrl = getPlaygroundUrl(options);
-    return { title: key, url: playgroundUrl };
-  });
-
-  const message = generateOutput(projects);
-  core.setOutput("message", message);
-} catch (error) {
-  core.setFailed(error.message);
-}
+run();
 
 })();
 
