@@ -27206,6 +27206,7 @@ const run = async () => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
         const id = await uploadConfig(options.config);
         options.params = { ...options.params, x: "id/" + id };
+        delete options.config;
       }
       const playgroundUrl = getPlaygroundUrl(options);
       projects.push({ title: key, url: playgroundUrl });
