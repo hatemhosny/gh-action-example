@@ -60,7 +60,7 @@ const uploadConfig = async (config) => {
     });
     if (!res.ok) return "";
     const url = await res.text();
-    return url.replace(dpasteGetUrl, "");
+    return url.replace(dpasteGetUrl, "").trim();
   } catch (error) {
     return "";
   }
@@ -169,11 +169,12 @@ const run = async () => {
         // sequential requests and delay to respect rate limit of 1 request/second
         await new Promise((resolve) => setTimeout(resolve, 1500));
         const id = await uploadConfig(options.config);
-        options.import = "id/" + id;
-        console.log("dpaste id:", id);
-        delete options.config;
+        if (id) {
+          options.import = "id/" + id;
+          delete options.config;
+        }
       }
-      const playgroundUrl = getPlaygroundUrl(options);
+      const playgroundUrl = getPlaygroundUrl(options).replace(/%2F/g, "/");
       projects.push({ title: key, url: playgroundUrl });
     }
 
