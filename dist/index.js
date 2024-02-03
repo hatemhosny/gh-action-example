@@ -27186,7 +27186,8 @@ const getFormattedDate = (dateStr) => {
         })
         .split(" ")
         .join("")
-        .toLocaleLowerCase()
+        .toLocaleLowerCase() +
+      " (UTC)"
     );
   } catch {
     return "";
