@@ -27042,6 +27042,7 @@ const mime = __nccwpck_require__(9994);
 
 const sha = process.env.SHA || "";
 const ref = process.env.REF || "";
+const lastUpdated = process.env.LAST_UPDATED || "";
 const repo = process.env.REPO || "";
 const baseUrl = (process.env.BASE_URL || "")
   .replace(/{{\s*LC::SHA\s*}}/g, sha)
@@ -27177,6 +27178,7 @@ const generateOutput = (projects) => {
 ## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>
 
 **Latest commit:** ${sha}
+${lastUpdated ? `**Last updated:** ${new Date(lastUpdated).toUTCString()}` : ""}
 
 |  Project | Link |
 |:-:|------------------------|
