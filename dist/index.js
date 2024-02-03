@@ -27166,6 +27166,33 @@ const trimLongUrl = (url, max) => {
   return url;
 };
 
+const getFormattedDate = (dateStr) => {
+  try {
+    const date = new Date(dateStr);
+    return (
+      "**Last updated:** " +
+      date.toLocaleString("en-US", { month: "short", timeZone: "UTC" }) +
+      " " +
+      date.getUTCDate() +
+      ", " +
+      date.getUTCFullYear() +
+      " " +
+      date
+        .toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+          timeZone: "UTC",
+        })
+        .split(" ")
+        .join("")
+        .toLocaleLowerCase()
+    );
+  } catch {
+    return "";
+  }
+};
+
 const generateOutput = (projects) => {
   const projectsMarkDown = projects.map(
     (project) =>
@@ -27177,8 +27204,8 @@ const generateOutput = (projects) => {
   return `
 ## <a href="https://livecodes.io"><img alt="LiveCodes logo" src="https://livecodes.io/livecodes/assets/images/livecodes-logo.svg" width="32"></a> Preview in <a href="https://livecodes.io">LiveCodes</a>
 
-**Latest commit:** ${sha}
-${lastUpdated ? `**Last updated:** ${new Date(lastUpdated).toUTCString()}` : ""}
+**Latest commit:** ${sha}  
+${getFormattedDate(lastUpdated)}
 
 |  Project | Link |
 |:-:|------------------------|
