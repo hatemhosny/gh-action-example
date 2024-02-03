@@ -170,6 +170,7 @@ const run = async () => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
         const id = await uploadConfig(options.config);
         options.import = "id/" + id;
+        console.log("dpaste id:", id);
         delete options.config;
       }
       const playgroundUrl = getPlaygroundUrl(options);
